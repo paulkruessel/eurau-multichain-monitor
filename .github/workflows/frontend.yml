@@ -1,0 +1,60 @@
+name: Compile and test the frontend
+
+on:
+    push:
+        branches:
+            - main
+        paths:
+            - "eurau-client/**"
+    pull_request:
+        branches:
+            - main
+        paths:
+            - "backend/**"
+
+jobs:
+    checkout:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+    install-npm:
+        runs-on: ubuntu-latest
+        needs: checkout
+        steps:
+            - name: Install npm
+              uses: actions/setup-node@v7
+              with:
+                  node-version: '24.16.0'
+                  package-manager-cache: false
+
+    install-dependencies:
+        runs-on: ubuntu-latest
+        needs: install-npm
+        defaults:
+            run:
+                working-directory: eurau-client
+        steps:
+            - name: Install dependencies
+              run: npm ci
+
+    build:
+        runs-on: ubuntu-latest
+        needs: install-dependencies
+        defaults:
+            run:
+                working-directory: eurau-client
+        steps:
+            - name: Build project
+              run: npm run ng build
+
+    test:
+        runs-on: ubuntu-latest
+        needs: build
+        defaults:
+            run:
+                working-directory: eurau-client
+        steps:
+            - name: Run tests
+              run: npm test
