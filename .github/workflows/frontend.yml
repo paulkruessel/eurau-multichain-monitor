@@ -11,6 +11,7 @@ on:
             - main
         paths:
             - "eurau-client/**"
+            - ".github/workflows/frontend.yml"
 
 jobs:
     checkout:
