@@ -12,15 +12,18 @@ on:
             - main
         paths:
             - "backend/**"
+            - ".github/workflows/backend.yml"
 
 jobs:
-    backend:
+    checkout:
         runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
 
-        defaults:
-            run:
-                working-directory: backend
-
+    install-uv:
+        runs-on: ubuntu-latest
+        needs: checkout
         steps:
             - name: Checkout
               uses: actions/checkout@v4
@@ -28,16 +31,76 @@ jobs:
             - name: Install uv
               uses: astral-sh/setup-uv@v5
               with:
-                enable-cache: true
+                  enable-cache: true
 
             - name: Install Python
               run: uv python install
-            
+
+    install-dependencies:
+        runs-on: ubuntu-latest
+        needs: install-uv
+        defaults:
+            run:
+                working-directory: backend
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Install uv
+              uses: astral-sh/setup-uv@v5
+              with:
+                  enable-cache: true
+
+            - name: Install Python
+              run: uv python install
+
+            - name: Install dependencies
+              run: uv sync --locked
+
+    compile:
+        runs-on: ubuntu-latest
+        needs: install-dependencies
+        defaults:
+            run:
+                working-directory: backend
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Install uv
+              uses: astral-sh/setup-uv@v5
+              with:
+                  enable-cache: true
+
+            - name: Install Python
+              run: uv python install
+
             - name: Install dependencies
               run: uv sync --locked
 
             - name: Compile check
-              run: uv run python -m compileall backend
+              run: uv run python -m compileall src
+
+    test:
+        runs-on: ubuntu-latest
+        needs: compile
+        defaults:
+            run:
+                working-directory: backend
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Install uv
+              uses: astral-sh/setup-uv@v5
+              with:
+                  enable-cache: true
+
+            - name: Install Python
+              run: uv python install
+
+            - name: Install dependencies
+              run: uv sync --locked
 
             - name: Run tests
               run: uv run pytest
