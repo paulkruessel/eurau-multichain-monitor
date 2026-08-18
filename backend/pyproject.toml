@@ -7,7 +7,8 @@ requires-python = ">=3.12"
 dependencies = [
     "fastapi[standard]>=0.141.1",
     "web3[tester]",
-    "python-dotenv"
+    "python-dotenv",
+    "pytest>=8.3.2"
 ]
 
 [build-system]
