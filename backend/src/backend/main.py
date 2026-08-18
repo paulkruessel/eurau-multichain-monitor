@@ -31,7 +31,7 @@ async def getConnectionInfo():
             )
 
         return {
-            "rpc_url": rpc_url,
+            "connected": True,
             "chain_id": w3.eth.chain_id,
             "block_number": w3.eth.block_number
         }
