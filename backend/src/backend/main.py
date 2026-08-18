@@ -14,7 +14,7 @@ async def root():
 @app.get("/connection")
 async def getConnectionInfo():
     try:
-        rpc_url, contractAddress = readConInfoFromEnv()
+        rpc_url = os.environ["BASE_RPC_URL"]
 
         w3 = Web3(Web3.HTTPProvider(rpc_url))
 
@@ -41,13 +41,3 @@ async def getConnectionInfo():
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error looking up .env file.",
         )
-
-
-
-def readConInfoFromEnv():
-    env_path = Path(__file__).resolve().parents[2] / ".env"
-    if(not env_path.exists()):
-        raise FileNotFoundError(f"Path to .env does not exist: {env_path}")
-
-    load_dotenv(env_path)
-    return (os.environ["BASE_RPC_URL"], os.environ["EURAU_BASE_CONTRACT_ADDRESS"])
