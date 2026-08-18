@@ -1,6 +1,4 @@
 from fastapi import FastAPI, HTTPException, status
-from dotenv import load_dotenv
-from pathlib import Path
 import os
 
 from web3 import Web3
