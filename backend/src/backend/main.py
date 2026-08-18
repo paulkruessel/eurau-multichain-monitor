@@ -45,7 +45,7 @@ async def getConnectionInfo():
 
 
 def readConInfoFromEnv():
-    env_path = Path("../../.env").resolve()
+    env_path = Path(__file__).resolve().parents[2] / ".env"
     if(not env_path.exists()):
         raise FileNotFoundError(f"Path to .env does not exist: {env_path}")
 
