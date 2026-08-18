@@ -12,7 +12,7 @@ if str(PROJECT_ROOT) not in sys.path:
 from backend import main
 
 
-def test_get_connection_info_returns_rpc_status(monkeypatch):
+def test_get_connection_info_returns_connected_chain_status(monkeypatch):
     monkeypatch.setenv("BASE_RPC_URL", "https://rpc.example.com")
 
     class FakeProvider:
@@ -43,7 +43,7 @@ def test_get_connection_info_returns_rpc_status(monkeypatch):
     }
 
 
-def test_get_connection_info_raises_when_rpc_unavailable(monkeypatch):
+def test_get_connection_info_raises_http_503_when_rpc_unavailable(monkeypatch):
     monkeypatch.setenv("BASE_RPC_URL", "https://rpc.example.com")
 
     class FakeProvider:
@@ -72,7 +72,7 @@ def test_get_connection_info_raises_when_rpc_unavailable(monkeypatch):
     assert "unavailable" in exc_info.value.detail.lower()
 
 
-def test_get_connection_info_raises_when_chain_id_not_expected(monkeypatch):
+def test_get_connection_info_raises_http_500_when_chain_id_mismatch(monkeypatch):
     monkeypatch.setenv("BASE_RPC_URL", "https://rpc.example.com")
 
     class FakeProvider:
@@ -101,7 +101,7 @@ def test_get_connection_info_raises_when_chain_id_not_expected(monkeypatch):
     assert "8453" in exc_info.value.detail
 
 
-def test_get_connection_info_raises_when_base_rpc_url_missing(monkeypatch):
+def test_get_connection_info_raises_key_error_when_base_rpc_url_missing(monkeypatch):
     monkeypatch.delenv("BASE_RPC_URL", raising=False)
 
     with pytest.raises(KeyError):
