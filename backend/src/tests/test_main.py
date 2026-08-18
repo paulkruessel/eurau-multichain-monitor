@@ -37,7 +37,7 @@ def test_get_connection_info_returns_rpc_status(monkeypatch):
     result = asyncio.run(main.getConnectionInfo())
 
     assert result == {
-        "rpc_url": "https://rpc.example.com",
+        "connected": True,
         "chain_id": 8453,
         "block_number": 1234,
     }
